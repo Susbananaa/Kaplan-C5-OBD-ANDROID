@@ -1,0 +1,6 @@
+{
+  "appId": "com.c5obd.app",
+  "appName": "C5-OBD",
+  "webDir": "www",
+  "android": { "backgroundColor": "#16202e" }
+}
