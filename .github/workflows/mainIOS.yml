@@ -1,1 +1,30 @@
-
+name: iOS IPA derle
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install
+      - run: npm install --no-save @capacitor/ios@^6.2.0
+      - run: npm run build:web
+      - run: npx cap add ios
+      - name: Bluetooth izin metni
+        run: |
+          /usr/libexec/PlistBuddy -c "Add :NSBluetoothAlwaysUsageDescription string C5-OBD cihazina baglanmak icin Bluetooth gerekli" ios/App/App/Info.plist
+      - run: npx cap sync ios
+      - name: Derle (imzasiz)
+        run: |
+          xcodebuild -workspace ios/App/App.xcworkspace -scheme App -configuration Release -sdk iphoneos \
+            -archivePath build/App.xcarchive archive \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
+          mkdir -p Payload
+          cp -R build/App.xcarchive/Products/Applications/App.app Payload/
+          zip -qr C5-OBD.ipa Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: c5-obd-ipa
+          path: C5-OBD.ipa
