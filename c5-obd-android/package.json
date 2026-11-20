@@ -1,0 +1,19 @@
+{
+  "name": "c5-obd",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build:web": "esbuild src/ble.js --bundle --minify --format=iife --outfile=www/ble.js",
+    "android:add": "cap add android",
+    "android:apk": "npm run build:web && cap sync android && cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor-community/bluetooth-le": "^6.1.0",
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/core": "^6.2.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.0",
+    "esbuild": "^0.24.0"
+  }
+}
